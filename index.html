@@ -1,0 +1,93 @@
+<html>
+<body>
+<h2>Reflex agent</h2>
+<p id="log"></p>
+<script type="text/javascript">
+    // MIT License
+// Copyright (c) 2020 Luis Espino
+
+var visited = [0,0,0,0,0,0,0,0]
+
+function reflex_agent(location, state){
+   	if (state=="DIRTY") return "CLEAN";
+   	else if (location=="A") return "RIGHT";
+   	else if (location=="B") return "LEFT";
+}
+
+function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+}
+
+function test(states) {
+    let res = 0;
+    visited.forEach(v=>res+=v)
+    console.log(visited)
+    if (res == 8){
+        document.getElementById("log").innerHTML += "<br>Todos los estados fueron visitados.";
+        return;
+    }
+    if (arraysEqual(states, ["A", "DIRTY", "DIRTY"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 1: ['A', 'DIRTY','DIRTY'].";
+        visited[0] = 1;
+    } else if (arraysEqual(states, ["B", "DIRTY", "DIRTY"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 2: ['B', 'DIRTY', 'DIRTY'].";
+        visited[1] = 1;
+    } else if (arraysEqual(states, ["A", "DIRTY", "CLEAN"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 3: ['A', 'DIRTY','CLEAN'].";
+        visited[2] = 1;
+    } else if (arraysEqual(states, ["B", "DIRTY", "CLEAN"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 4: ['B', 'DIRTY','CLEAN'].";
+        visited[3] = 1;
+    } else if (arraysEqual(states, ["A", "CLEAN", "DIRTY"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 5: ['A', 'CLEAN','DIRTY'].";
+        visited[4] = 1;
+    } else if (arraysEqual(states, ["B", "CLEAN", "DIRTY"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 6: ['B', 'CLEAN','DIRTY'].";
+        visited[5] = 1;
+    } else if (arraysEqual(states, ["A", "CLEAN", "CLEAN"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 7: ['A', 'CLEAN','CLEAN'].";
+        visited[6] = 1;
+    } else if (arraysEqual(states, ["B", "CLEAN", "CLEAN"])) {
+        document.getElementById("log").innerHTML += "<br>Estado 8: ['B', 'CLEAN','CLEAN'].";
+        visited[7] = 1;
+    }
+
+    var location = states[0];
+    var state = (location == "A") ? states[1] : states[2];
+    var action_result = reflex_agent(location, state);
+    
+    document.getElementById("log").innerHTML += `<br>Location: ${location} | Action: ${action_result}`;
+    if (action_result == "CLEAN") {
+        if (location == "A") states[1] = "CLEAN";
+        else if (location == "B") states[2] = "CLEAN";
+    } else if (action_result == "RIGHT") {
+        if (location == "A") {
+            states[0] = "B";
+        }
+    } else if (action_result == "LEFT") {
+        if (location == "B") {
+            states[0] = "A";
+        }
+    }
+
+    const timeInMillis = Date.now();
+    const random = Math.round(timeInMillis % 5);
+    
+    if(states[1] == "CLEAN" && random == 0){
+        states[1] = "DIRTY"
+    }
+    if(states[2] == "CLEAN" && random == 0){
+        states[2] = "DIRTY"
+    }
+    setTimeout(function(){ test(states); }, 500);
+}
+
+var states = ["A","DIRTY","DIRTY"];
+test(states);
+</script>
+</body>
+</html>
